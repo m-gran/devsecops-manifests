@@ -3,6 +3,8 @@ kind: AppProject
 metadata:
   name: dev-team-a-project
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   description: "Project for Dev Team A workloads"
   sourceRepos:
@@ -11,7 +13,7 @@ spec:
   # 2. DESTINATION: may only deploy to own namespace
   destinations:
   - namespace: dev-team-a-*
-    server: [https://kubernetes.default.svc]
+    server: https://kubernetes.default.svc
   
   # 3. May not touch cluster level objects
   clusterResourceWhitelist: []

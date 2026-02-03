@@ -3,13 +3,15 @@ kind: AppProject
 metadata:
   name: operations-project
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   description: "Project for Operations Team tools"
   sourceRepos:
   - '*'
   destinations:
   - namespace: '*'
-    server: [https://kubernetes.default.svc]
+    server: https://kubernetes.default.svc
   # Allow managing cluster-level resources (CRDs, ClusterRoles, ClusterPolicies)
   clusterResourceWhitelist:
   - group: '*'
