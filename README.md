@@ -1,30 +1,30 @@
-# Enterprise GitOps Workflow & Architecture
+# DevSecOps ArgoCD Manifests
 
-This repository follows a strict **Multi-Tenant GitOps** architecture designed for enterprise scalability. This document explains the relationship between files and the standard workflow for developers and operators.
+This repository contains the GitOps manifests for the DevSecOps platform, managed by ArgoCD.
 
-## 1. High-Level Architecture
+## Directory Structure
 
-The setup separates **Definition** (What app?) from **Instantiation** (Where does it run?) and **Permission** (Who owns it?).
+*   **`bootstrap/`**: Contains the entry points for ArgoCD.
+    *   **`root-app.yaml`**: The root Application that bootstraps the Control Plane. Pointer: `bootstrap/control-plane`.
+    *   **`control-plane/`**: "Meta-Apps" that manage the platform configuration.
+        *   `projects.yaml`: Loads ArgoCD Projects from `projects/`.
+        *   `appsets.yaml`: Loads ApplicationSets from `clusters/`.
+*   **`clusters/`**: Contains ApplicationSets. Each file here represents a Team or a Category of applications (e.g., `operations.yaml`, `dev-team-a.yaml`).
+*   **`projects/`**: ArgoCD Project definitions (e.g., `operations-project.yaml`).
+*   **`apps/`**: The actual application manifests. Organized by team/tenant.
+    *   **`operations/`**: Operational tools (e.g., Kyverno).
+    *   **`dev-team-a/`**: Applications belonging to Dev Team A.
 
-### File Interaction Diagram
+## Workflows
 
-```mermaid
-graph TD
-    User[Operator] -->|kubectl apply| Bootstrap(Bootstrap App)
-    
-    subgraph "Phase 1: Security & Governance"
-    Bootstrap -->|Installs| Projects[projects/*.yaml]
-    Projects -->|Creates| TeamProject(AppProject: dev-team-a)
-    end
-    
-    subgraph "Phase 2: Automation"
-    Bootstrap -->|Installs| AppSets[clusters/dev-cluster/*.yaml]
-    AppSets -->|Generates| ArgoApp(Application: demo-app-dev)
-    end
-    
-    subgraph "Phase 3: Deployment"
-    ArgoApp -->|Reads Manifests| GitRepo[apps/dev-team-a/demo-app]
-    ArgoApp -->|Deploys to| K8s(Kubernetes Cluster)
-    end
-    
-    TeamProject -.->|Enforces RBAC| ArgoApp
+### Onboarding a New Team
+1.  Create a Project file in `projects/<team-name>-project.yaml`.
+2.  Create an ApplicationSet in `clusters/<team-name>.yaml` targeting `apps/<team-name>/*`.
+
+### Adding a New Application
+1.  Create a new directory in `apps/<team-name>/<app-name>`.
+2.  Add a `base/kustomization.yaml` (and overlays if needed).
+3.  The ApplicationSet in `clusters/` will automatically detect and deploy it.
+
+### Operations Apps
+Operations applications (like Kyverno) are located in `apps/operations`. They are automatically deployed by the `clusters/operations.yaml` ApplicationSet.

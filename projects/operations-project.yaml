@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: operations-project
+  namespace: argocd
+spec:
+  description: "Project for Operations Team tools"
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: '*'
+    server: [https://kubernetes.default.svc](https://kubernetes.default.svc)
+  # Allow managing cluster-level resources (CRDs, ClusterRoles, ClusterPolicies)
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'

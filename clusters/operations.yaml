@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: operations-apps
+  namespace: argocd
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/m-gran/devsecops-manifests.git
+      revision: HEAD
+      directories:
+      - path: apps/operations/*
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      project: operations-project
+      source:
+        repoURL: https://github.com/m-gran/devsecops-manifests.git
+        targetRevision: HEAD
+        path: '{{path}}/base'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{path.basename}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

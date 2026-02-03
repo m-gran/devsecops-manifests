@@ -1,0 +1,30 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-probes
+  annotations:
+    policies.kyverno.io/title: Require Probes
+    policies.kyverno.io/category: Best Practices
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: check-probes
+      match:
+        any:
+        - resources:
+            kinds:
+              - Deployment
+              - StatefulSet
+              - DaemonSet
+      validate:
+        message: "Liveness and Readiness probes are required."
+        pattern:
+          spec:
+            template:
+              spec:
+                containers:
+                - livenessProbe:
+                    periodSeconds: "?*"
+                  readinessProbe:
+                    periodSeconds: "?*"
