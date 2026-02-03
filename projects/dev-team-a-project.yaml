@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dev-team-a-project
+  namespace: argocd
+spec:
+  description: "Project for Dev Team A workloads"
+  sourceRepos:
+  - https://github.com/m-gran/devsecops-manifests.git
+  
+  # 2. DESTINATION: may only deploy to own namespace
+  destinations:
+  - namespace: dev-team-a-*
+    server: [https://kubernetes.default.svc]
+  
+  # 3. May not touch cluster level objects
+  clusterResourceWhitelist: []
+  
+  # 4. RBAC: team may only sync own apps
+  roles:
+  - name: developer
+    description: Read-only access and sync rights
+    policies:
+    - p, proj:dev-team-a-project:developer, applications, get, dev-team-a-project/*, allow
+    - p, proj:dev-team-a-project:developer, applications, sync, dev-team-a-project/*, allow
