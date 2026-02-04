@@ -1,0 +1,28 @@
+name: Validate All Apps
+
+on:
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  full-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Kyverno CLI
+        uses: kyverno/action-install-cli@v0.2.0
+        with:
+          release: 'v1.17.0'
+
+      - name: Scan ALL Apps
+        run: |
+          echo "Starting full compliance scan of ./apps directory..."
+          
+          # 1. Apply policies to the entire ./apps folder
+          # We assume 'platform' holds the policies and 'apps' holds the workloads
+          kyverno apply ./platform/kyverno/policies \
+            --resource ./apps \
+            --policy-report \
+            --detailed-results \
+            --exit-code-on-fail

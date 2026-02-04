@@ -1,0 +1,22 @@
+name: Manual Policy Unit Tests
+
+on:
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name:  Checkout Code
+        uses: actions/checkout@v3
+
+      - name:  Install Kyverno CLI
+        uses: kyverno/action-install-cli@v0.2.0
+        with:
+          release: 'v1.17.0' # Match your cluster version
+
+      - name:  Run All Policy Unit Tests
+        run: |
+          echo "Running tests in platform/kyverno/tests..."
+          # This recursively finds all kyverno-test.yaml files in subfolders
+          kyverno test ./platform/kyverno/tests

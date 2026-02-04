@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: good-pod-labels
+  labels:
+    team: v1.0.0 # Has the required label
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest

@@ -9,7 +9,7 @@ spec:
       repoURL: https://github.com/m-gran/devsecops-manifests.git
       revision: HEAD
       directories:
-      - path: apps/operations/*
+      - path: platform/*
   template:
     metadata:
       name: '{{path.basename}}'

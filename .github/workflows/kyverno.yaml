@@ -1,0 +1,59 @@
+name: Kyverno Guardrails
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate:
+    name: Validate Policies & Apps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Required to detect changed files
+
+      - name: Install Kyverno CLI
+        uses: kyverno/action-install-cli@v0.2.0
+        with:
+          release: 'v1.17.0' 
+
+      # kyverno unit tests 
+      - name: Check for Policy or Infra Changes
+        id: policy-changes
+        run: |
+          # Detects changes in 'platform/kyverno' OR the workflow file itself
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E "^platform/kyverno/|.github/workflows/kyverno.yaml"; then
+            echo "detected=true" >> $GITHUB_OUTPUT
+            echo "::notice::Policy infrastructure changed. Running Policy Unit Tests."
+          else
+            echo "detected=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Policy Unit Tests
+        if: steps.policy-changes.outputs.detected == 'true'
+        run: |
+          kyverno test ./platform/kyverno/tests
+
+      # APP COMPLIANCE CHECKS
+      # Only check actual application code changes
+      - name: Scan Changed Applications
+        run: |
+          # 1. Identify changed YAMLs in the 'apps' folder only
+          CHANGED_FILES=$(git diff --name-only --diff-filter=d origin/${{ github.base_ref }}...HEAD | grep "^apps/.*\.yaml$")
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No application changes detected. Skipping App Scan."
+            exit 0
+          fi
+
+          echo "Scanning the following changed application manifests:"
+          echo "$CHANGED_FILES"
+
+          # 2. Run Kyverno Apply
+          # We feed the changed files (stdin) to Kyverno, checking them against policies in platform/
+          echo "$CHANGED_FILES" | xargs kyverno apply ./platform/kyverno/policies \
+            --policy-report \
+            --detailed-results \
+            --exit-code-on-fail
