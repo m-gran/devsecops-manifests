@@ -1,8 +1,7 @@
 # Kyverno Policy Management
 
 This directory contains the **Policy Definitions** for our Kubernetes cluster.
-It is separated from the controller installation (`../kyverno/`) to allow for independent lifecycles.
-
+It is separated from the controller installation (`../kyverno/`) to allow for independent lifecycles
 ## 📂 Repository Structure
 
 ```text
