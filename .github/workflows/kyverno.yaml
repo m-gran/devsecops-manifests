@@ -24,7 +24,7 @@ jobs:
         id: policy-changes
         run: |
           # Detects changes in 'platform/kyverno' OR the workflow file itself
-          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E "^platform/kyverno/|.github/workflows/kyverno.yaml"; then
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E "^platform/kyverno_policies/|.github/workflows/kyverno.yaml"; then
             echo "detected=true" >> $GITHUB_OUTPUT
             echo "::notice::Policy infrastructure changed. Running Policy Unit Tests."
           else
@@ -34,7 +34,7 @@ jobs:
       - name: Run Policy Unit Tests
         if: steps.policy-changes.outputs.detected == 'true'
         run: |
-          kyverno test ./platform/kyverno/tests
+          kyverno test ./platform/kyverno_policies/tests
 
       # APP COMPLIANCE CHECKS
       # Only check actual application code changes
@@ -53,7 +53,7 @@ jobs:
 
           # 2. Run Kyverno Apply
           # We feed the changed files (stdin) to Kyverno, checking them against policies in platform/
-          echo "$CHANGED_FILES" | xargs kyverno apply ./platform/kyverno/policies \
+          echo "$CHANGED_FILES" | xargs kyverno apply ./platform/kyverno_policies/policies \
             --policy-report \
             --detailed-results \
             --exit-code-on-fail

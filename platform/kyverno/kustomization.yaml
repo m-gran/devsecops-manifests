@@ -3,4 +3,4 @@ kind: Kustomization
 namespace: kyverno
 resources:
   - base        # Points to the directory containing the Helm chart definition
-  - policies    # Points to the directory containing your policies
+#  - policies    # Points to the directory containing your policies

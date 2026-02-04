@@ -21,7 +21,7 @@ jobs:
           
           # 1. Apply policies to the entire ./apps folder
           # We assume 'platform' holds the policies and 'apps' holds the workloads
-          kyverno apply ./platform/kyverno/policies \
+          kyverno apply ./platform/kyverno_policies/policies \
             --resource ./apps \
             --policy-report \
             --detailed-results \

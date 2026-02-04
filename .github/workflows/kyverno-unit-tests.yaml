@@ -17,6 +17,6 @@ jobs:
 
       - name:  Run All Policy Unit Tests
         run: |
-          echo "Running tests in platform/kyverno/tests..."
+          echo "Running tests in platform/kyverno_policies/tests..."
           # This recursively finds all kyverno-test.yaml files in subfolders
-          kyverno test ./platform/kyverno/tests
+          kyverno test ./platform/kyverno_policies/tests
