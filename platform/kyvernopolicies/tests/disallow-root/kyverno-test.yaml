@@ -3,7 +3,7 @@ kind: Test
 metadata:
   name: disallow-root-test
 policies:
-  - ../../policies/disallow-root.yaml
+  - ../../base/disallow-root.yaml
 resources:
   - pass.yaml
   - fail.yaml
