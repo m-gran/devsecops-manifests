@@ -18,7 +18,7 @@ spec:
       source:
         repoURL: https://github.com/m-gran/devsecops-manifests.git
         targetRevision: HEAD
-        path: '{{path}}/overlays/dev'
+        path: '{{path}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: dev-team-a-dev
