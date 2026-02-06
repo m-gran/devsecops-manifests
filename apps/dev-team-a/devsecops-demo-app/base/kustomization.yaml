@@ -4,9 +4,6 @@ kind: Kustomization
 # Namespace is handled by the parent, but can remain here for local validation
 namespace: demo-app 
 
-helmCharts:
-  - name: demo-app
-    repo: "https://github.com/m-gran/devsecops-demo-app"
-    version: 0.1.2
-    releaseName: demo-app
-    namespace: demo-app
+resources:
+  - deployment.yaml
+  - service.yaml

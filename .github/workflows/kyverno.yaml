@@ -19,6 +19,17 @@ jobs:
         with:
           release: 'v1.17.0' 
 
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.12.0'
+
+      - name: Install Kustomize
+        uses: imranismail/setup-kustomize@v2
+        with:
+          kustomize-version: "5.3.0"
+
+
       # kyverno unit tests 
       - name: Check for Policy or Infra Changes
         id: policy-changes
@@ -37,32 +48,48 @@ jobs:
           kyverno test ./platform/kyvernopolicies/tests
 
       # APP COMPLIANCE CHECKS
-      # Only check actual application code changes
       - name: Scan Changed Applications
         run: |
-          # 1. Identify changed YAMLs in the 'apps' folder only
-          CHANGED_FILES=$(git diff --name-only --diff-filter=d origin/${{ github.base_ref }}...HEAD | grep "^apps/.*\.yaml$" | grep -v "kustomization.yaml" || true)
+          # 1. Identify changed application directories
+          # We look for any file changes in 'apps/', then find the nearest directory containing kustomization.yaml
+          
+          # Get list of changed files in apps/
+          CHANGED_FILES=$(git diff --name-only --diff-filter=d origin/${{ github.base_ref }}...HEAD | grep "^apps/" || true)
 
           if [ -z "$CHANGED_FILES" ]; then
             echo "No application changes detected. Skipping App Scan."
             exit 0
           fi
-
-          echo "Scanning the following changed application manifests:"
+          
+          echo "Detected changes in:"
           echo "$CHANGED_FILES"
 
-          # 2. Run Kyverno Apply
-          # We feed the changed files (stdin) to Kyverno, checking them against policies in platform/
-          # Construct arguments with --resource for each file
-          resource_args=""
-          for file in $CHANGED_FILES; do
-            resource_args="$resource_args --resource $file"
-          done
+          # Find unique directories from changed files
+          CHANGED_DIRS=$(echo "$CHANGED_FILES" | xargs -L1 dirname | sort -u)
+          
+          # 2. Iterate directories and run kustomize build + kyverno scan
+          for dir in $CHANGED_DIRS; do
+            # Check if this directory is a Kustomize module
+            TARGET_DIR="$dir"
+            if [ ! -f "$dir/kustomization.yaml" ]; then
+              if [ -f "$dir/base/kustomization.yaml" ]; then
+                 TARGET_DIR="$dir/base"
+              else
+                 echo "Skipping $dir (no kustomization.yaml found in . or ./base)"
+                 ls -la "$dir"
+                 continue
+              fi
+            fi
 
-          # Execute kyverno apply
-          if [ -n "$resource_args" ]; then
+            echo "------------------------------------------------"
+            echo "Scanning application in: $TARGET_DIR"
+            echo "Running: kustomize build --enable-helm $TARGET_DIR"
+            
+            # Build manifests and pipe to kyverno
+            # We use '-' as the resource argument to read from stdin
+            kustomize build "$TARGET_DIR" | \
             kyverno apply ./platform/kyvernopolicies/base \
+              --resource - \
               --policy-report \
-              --detailed-results \
-              $resource_args
-          fi
+              --detailed-results
+          done

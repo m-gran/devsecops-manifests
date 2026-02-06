@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app-devsecops-lab-app
+  labels:
+    helm.sh/chart: devsecops-lab-app-0.1.2
+    app.kubernetes.io/name: devsecops-lab-app
+    app.kubernetes.io/instance: demo-app
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devsecops-lab-app
+      app.kubernetes.io/instance: demo-app
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: devsecops-lab-app-0.1.2
+        app.kubernetes.io/name: devsecops-lab-app
+        app.kubernetes.io/instance: demo-app
+        app.kubernetes.io/version: "1.16.0"
+        app.kubernetes.io/managed-by: Helm
+        team: developers
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: devsecops-lab-app
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+          image: "480126395555.dkr.ecr.eu-north-1.amazonaws.com/devsecops-lab-app:v0.0.6"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
