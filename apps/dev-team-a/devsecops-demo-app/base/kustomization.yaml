@@ -7,6 +7,6 @@ namespace: demo-app
 helmCharts:
   - name: demo-app
     repo: "https://github.com/m-gran/devsecops-demo-app"
-    version: 0.1.1
+    version: 0.1.2
     releaseName: demo-app
     namespace: demo-app
