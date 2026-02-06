@@ -4,11 +4,8 @@ metadata:
   name: demo-app-devsecops-lab-app
   namespace: dev-team-a
   labels:
-    helm.sh/chart: devsecops-lab-app-0.1.2
     app.kubernetes.io/name: devsecops-lab-app
     app.kubernetes.io/instance: dev-team-a
-    app.kubernetes.io/version: "1.16.0"
-    app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
   selector:
@@ -18,11 +15,8 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: devsecops-lab-app-0.1.2
         app.kubernetes.io/name: devsecops-lab-app
         app.kubernetes.io/instance: dev-team-a
-        app.kubernetes.io/version: "1.16.0"
-        app.kubernetes.io/managed-by: Helm
         team: developers
     spec:
       serviceAccountName: default
