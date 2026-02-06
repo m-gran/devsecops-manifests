@@ -12,16 +12,18 @@ spec:
   
   # 2. DESTINATION: may only deploy to own namespace
   destinations:
-  - namespace: dev-team-a
+  - namespace: dev-team-a-* # Allow all namespaces starting with dev-team-a-
     server: https://kubernetes.default.svc
-  
-  # 3. May not touch cluster level objects
-  clusterResourceWhitelist: []
+
+  # 3. May not touch cluster level objects (except Namespace)
+  clusterResourceWhitelist: 
+  - group: ''
+    kind: Namespace
   
   # 4. RBAC: team may only sync own apps
   roles:
   - name: developer
     description: Read-only access and sync rights
     policies:
-    - p, proj:dev-team-a-project:developer, applications, get, dev-team-a, allow
-    - p, proj:dev-team-a-project:developer, applications, sync, dev-team-a, allow
+    - p, proj:dev-team-a-project:developer, applications, get, *, allow
+    - p, proj:dev-team-a-project:developer, applications, sync, *, allow
