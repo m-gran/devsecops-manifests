@@ -23,5 +23,5 @@ spec:
   - name: developer
     description: Read-only access and sync rights
     policies:
-    - p, proj:dev-team-a-project:developer, applications, get, dev-team-a-project/*, allow
-    - p, proj:dev-team-a-project:developer, applications, sync, dev-team-a-project/*, allow
+    - p, proj:dev-team-a-project:developer, applications, get, dev-team-a-/*, allow
+    - p, proj:dev-team-a-project:developer, applications, sync, dev-team-a-/*, allow
