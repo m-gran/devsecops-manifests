@@ -26,7 +26,7 @@ spec:
         pattern:
           spec:
             "=securityContext":
-              "=runAsUser": ">0"
+              "=runAsNonRoot": true
             "=(ephemeralContainers)":
               - "=securityContext":
                   "=(runAsUser)": ">0"
@@ -35,5 +35,5 @@ spec:
                   "=(runAsUser)": ">0"
             containers:
               - "=securityContext":
-                  "=(runAsUser)": ">0"
+                  "=(runAsNonRoot)": true
 
