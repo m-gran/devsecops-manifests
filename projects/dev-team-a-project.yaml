@@ -12,7 +12,9 @@ spec:
   
   # 2. DESTINATION: may only deploy to own namespace
   destinations:
-  - namespace: dev-team-a-* # Allow all namespaces starting with dev-team-a-
+  - namespace: dev-team-a-dev
+    server: https://kubernetes.default.svc
+  - namespace: dev-team-a-prod
     server: https://kubernetes.default.svc
 
   # 3. May not touch cluster level objects (except Namespace)

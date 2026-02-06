@@ -5,23 +5,29 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - git:
-      repoURL: https://github.com/m-gran/devsecops-manifests.git
-      revision: HEAD
-      directories:
-      - path: apps/dev-team-a/*
+  - matrix:
+      generators:
+      - git:
+          repoURL: https://github.com/m-gran/devsecops-manifests.git
+          revision: HEAD
+          directories:
+          - path: apps/dev-team-a/*
+      - list:
+          elements:
+          - env: dev
+          - env: prod
   template:
     metadata:
-      name: '{{path.basename}}-dev'
+      name: '{{path.basename}}-{{env}}'
     spec:
       project: dev-team-a-project
       source:
         repoURL: https://github.com/m-gran/devsecops-manifests.git
         targetRevision: HEAD
-        path: '{{path}}'
+        path: '{{path}}/overlays/{{env}}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: dev-team-a-{{path.basename}}-dev
+        namespace: dev-team-a-{{env}}
       syncPolicy:
         automated:
           prune: true

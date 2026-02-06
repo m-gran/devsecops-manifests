@@ -1,7 +1,7 @@
 apiVersion: policies.kyverno.io/v1alpha1
 kind: ValidatingPolicy
 metadata:
-  name: metadata-match-regex
+  name: require-labels
   annotations:
     policies.kyverno.io/title: Metadata Matches Regex in ValidatingPolicy
     policies.kyverno.io/category: Other in Vpol

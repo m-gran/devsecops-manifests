@@ -2,16 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: demo-app-devsecops-lab-app
-  namespace: dev-team-a
   labels:
     app.kubernetes.io/name: devsecops-lab-app
     app.kubernetes.io/instance: dev-team-a
+    team: developers
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: devsecops-lab-app
-      app.kubernetes.io/instance: dev-team-a-dev
+      app.kubernetes.io/instance: dev-team-a
   template:
     metadata:
       labels:
