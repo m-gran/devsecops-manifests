@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-app-devsecops-lab-app
+  labels:
+    helm.sh/chart: devsecops-lab-app-0.1.2
+    app.kubernetes.io/name: devsecops-lab-app
+    app.kubernetes.io/instance: demo-app
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: devsecops-lab-app
+    app.kubernetes.io/instance: demo-app

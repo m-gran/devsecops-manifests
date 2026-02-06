@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: good-pod-labels
   labels:
-    team: v1.0.0 # Has the required label
+    team: Developers # Has the required label
 spec:
   containers:
     - name: nginx
