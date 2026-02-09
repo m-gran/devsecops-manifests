@@ -1,8 +1,8 @@
-apiVersion: kyverno.io/v2beta1
+apiVersion: kyverno.io/v2
 kind: PolicyException
 metadata:
   name: namespace-policy-exception
-  namespace: kyverno # Typically created in the Kyverno namespace
+  namespace: kyverno
 spec:
   exceptions:
   - policyName: require-labels
@@ -14,3 +14,5 @@ spec:
         namespaces:
         - crossplane-system
         - kyverno
+        kinds:
+        - "*" # Ensure it catches all resource types in those namespaces

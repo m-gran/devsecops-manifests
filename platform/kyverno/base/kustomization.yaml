@@ -11,6 +11,8 @@ helmCharts:
     releaseName: kyverno
     namespace: kyverno
     valuesInline:
+      crds:
+        install: true      # Ensures all CRDs are deployed
       features:
         policyExceptions:
           enabled: true
