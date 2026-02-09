@@ -11,6 +11,10 @@ helmCharts:
     releaseName: kyverno
     namespace: kyverno
     valuesInline:
+      features:
+        policyExceptions:
+          enabled: true
+          namespace: kyverno
       admissionController:
         replicas: 1
       backgroundController:
