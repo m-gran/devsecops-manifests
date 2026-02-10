@@ -1,0 +1,8 @@
+apiVersion: networking.lab/v1alpha1
+kind: ACITenant
+metadata:
+  name: finance-dept
+  namespace: aci-mgmt # Where the developer wants the resource tracked
+spec:
+  tenantName: "finance-dept"
+  description: "Standard Finance Tenant via Portal"

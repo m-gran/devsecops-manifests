@@ -4,5 +4,4 @@ kind: Kustomization
 # Namespace is handled by the parent, but can remain here for local validation
 namespace: aci-mgmt 
 resources:
-  - provider-config.yaml
-  - tenant-finance.yaml
+  - finance-tenant.yaml
