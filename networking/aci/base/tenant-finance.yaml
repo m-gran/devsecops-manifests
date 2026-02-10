@@ -1,0 +1,23 @@
+# filename: infra/aci/tenant-finance.yaml
+apiVersion: tf.upbound.io/v1beta1
+kind: Workspace
+metadata:
+  name: aci-tenant-finance
+  namespace: aci-mgmt
+spec:
+  forProvider:
+    source: Inline
+    module: |
+      resource "aci_tenant" "finance" {
+        name        = "finance-dept"
+        description = "Managed by ArgoCD & Crossplane"
+      }
+    vars:
+      - key: username
+        valueFrom: { secretKeyRef: { name: aci-creds, namespace: aci-mgmt, key: username } }
+      - key: password
+        valueFrom: { secretKeyRef: { name: aci-creds, namespace: aci-mgmt, key: password } }
+      - key: url
+        valueFrom: { secretKeyRef: { name: aci-creds, namespace: aci-mgmt, key: url } }
+  providerConfigRef:
+    name: aci-provider-config

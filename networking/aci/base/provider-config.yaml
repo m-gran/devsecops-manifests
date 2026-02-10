@@ -1,0 +1,13 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: aci-provider-config
+spec:
+  configuration: |
+    terraform {
+      backend "kubernetes" {
+        secret_suffix = "aci-state"
+        namespace     = "aci-mgmt"
+        in_cluster_config = true
+      }
+    }

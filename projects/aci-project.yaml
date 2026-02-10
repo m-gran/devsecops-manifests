@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: aci-project
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  description: "Cisco ACI and Networking Infrastructure"
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: aci-mgmt
+    server: https://kubernetes.default.svc
+  # Allow managing cluster-level resources (CRDs, ClusterRoles, ClusterPolicies)
+clusterResourceWhitelist:
+  - group: 'tf.upbound.io'
+    kind: ProviderConfig
+  - group: ''
+    kind: Namespace
