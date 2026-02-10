@@ -2,6 +2,11 @@
 
 This repository contains the GitOps manifests for the DevSecOps platform, managed by ArgoCD.
 
+to avoid loadbalancer costs in AWS we use NodePort instead of LoadBalancer
+
+### Oneliner to access ArgoCD UI
+kubectl port-forward service/argocd-server -n argocd 8080:443
+
 ## Directory Structure
 
 *   **`bootstrap/`**: Contains the entry points for ArgoCD.
