@@ -2,6 +2,9 @@
 
 This repository contains the GitOps manifests for the DevSecOps platform, managed by ArgoCD.
 
+To access argoCD and other things use this oneline for port forwarding:
+kubectl port-forward service/argocd-server -n argocd 8080:443
+
 ## Directory Structure
 
 *   **`bootstrap/`**: Contains the entry points for ArgoCD.

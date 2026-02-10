@@ -3,7 +3,8 @@ kind: Kustomization
 
 # Namespace is handled by the parent, but can remain here for local validation
 namespace: crossplane-system 
-
+resources:
+  - provider-manifest.yaml
 helmCharts:
   - name: crossplane
     repo: "https://charts.crossplane.io/stable"
