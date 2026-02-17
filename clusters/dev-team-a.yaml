@@ -5,6 +5,15 @@ metadata:
   namespace: argocd
 spec:
   generators:
+  # Generate applications for each PR
+  - pullRequest:
+      github:
+        owner: m-gran
+        repo: devsecops-manifests
+        labels:
+        - preview
+      requeueAfterSeconds: 1800
+  # Generate applications for each environment
   - matrix:
       generators:
       - git:
