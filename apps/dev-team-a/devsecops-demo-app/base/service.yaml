@@ -11,7 +11,6 @@ spec:
     - port: 5000
       targetPort: http
       protocol: TCP
-      nodePort: 30000
       name: http
   selector:
     app.kubernetes.io/name: devsecops-lab-app
