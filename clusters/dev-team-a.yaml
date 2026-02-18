@@ -4,16 +4,12 @@ metadata:
   name: dev-team-a
   namespace: argocd
 spec:
+  goTemplate: true
   generators:
-  # Generate applications for each PR
-  - pullRequest:
-      github:
-        owner: m-gran
-        repo: devsecops-manifests
-        labels:
-        - preview
-      requeueAfterSeconds: 1800
-  # Generate applications for each environment
+  # -------------------------------------------------------------------------
+  # GENERATOR 1: Static Environments (Dev & Prod)
+  # Combines directory discovery with a fixed list of environments.
+  # -------------------------------------------------------------------------
   - matrix:
       generators:
       - git:
@@ -25,21 +21,66 @@ spec:
           elements:
           - env: dev
           - env: prod
-  template:
-    metadata:
-      name: '{{path.basename}}-{{env}}'
-    spec:
-      project: dev-team-a-project
-      source:
-        repoURL: https://github.com/m-gran/devsecops-manifests.git
-        targetRevision: HEAD
-        path: '{{path}}/overlays/{{env}}'
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: dev-team-a-{{env}}
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
+      template:
+        metadata:
+          name: '{{.path.basename}}-{{.env}}'
+        spec:
+          project: dev-team-a-project
+          source:
+            repoURL: https://github.com/m-gran/devsecops-manifests.git
+            targetRevision: HEAD
+            path: '{{.path}}/overlays/{{.env}}'
+          destination:
+            server: https://kubernetes.default.svc
+            namespace: dev-team-a-{{.env}}
+          syncPolicy:
+            automated:
+              prune: true
+              selfHeal: true
+            syncOptions:
+              - CreateNamespace=true
+
+  # -------------------------------------------------------------------------
+  # GENERATOR 2: Ephemeral PR Environments
+  # Combines open Pull Requests (labeled 'preview') with directory discovery.
+  # Creates a distinct application for every app found in the repo for that PR.
+  # -------------------------------------------------------------------------
+  - matrix:
+      generators:
+      - pullRequest:
+          github:
+            owner: m-gran
+            repo: devsecops-manifests
+            labels:
+            - preview
+          requeueAfterSeconds: 1800
+      - git:
+          repoURL: https://github.com/m-gran/devsecops-manifests.git
+          revision: HEAD
+          directories:
+          - path: apps/dev-team-a/*
+      template:
+        metadata:
+          name: '{{.path.basename}}-pr-{{.number}}'
+        spec:
+          project: dev-team-a-project
+          source:
+            repoURL: https://github.com/m-gran/devsecops-manifests.git
+            # Uses the SHA of the PR head to ensure we test the actual code change
+            targetRevision: '{{.head_sha}}'
+            # Assumes a 'preview' overlay exists for ephemeral testing
+            path: '{{.path}}/overlays/preview'
+            helm:
+              parameters:
+              - name: image.tag
+                value: 'pr-{{.number}}'
+          destination:
+            server: https://kubernetes.default.svc
+            # Deploys to a dynamic namespace based on PR number
+            namespace: dev-team-a-pr-{{.number}}
+          syncPolicy:
+            automated:
+              prune: true
+              selfHeal: true
+            syncOptions:
+              - CreateNamespace=true
