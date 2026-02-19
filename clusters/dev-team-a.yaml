@@ -1,8 +1,3 @@
-apiVersion: argoproj.io/v1alpha1
-kind: ApplicationSet
-metadata:
-  name: dev-team-a
-  namespace: argocd
 spec:
   goTemplate: true
   generators:
@@ -11,27 +6,17 @@ spec:
       - git:
           repoURL: https://github.com/m-gran/devsecops-manifests.git
           revision: HEAD
-          directories:
-          - path: apps/dev-team-a/*
-      - list:
-          elements:
-          - env: dev
-          - env: prod
+          # Look for the specific environment files
+          files:
+          - path: "apps/dev-team-a/*/overlays/*/kustomization.yaml"
   template:
     metadata:
-      name: '{{.path.basename}}-{{.env}}'
+      # .path is now the path to the kustomization file
+      # .path.segments allows you to grab the app name and env name
+      name: '{{index .path.segments 2}}-{{index .path.segments 4}}'
     spec:
-      project: dev-team-a-project
       source:
         repoURL: https://github.com/m-gran/devsecops-manifests.git
         targetRevision: HEAD
-        path: '{{.path}}/overlays/{{.env}}'
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: dev-team-a-{{.env}}
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
+        # Use the directory containing the kustomization.yaml
+        path: '{{.path.directory}}'

@@ -6,24 +6,24 @@ metadata:
 spec:
   goTemplate: true
   generators:
-  - matrix:
-      generators:
-      - pullRequest:
-          github:
-            owner: m-gran
-            repo: devsecops-manifests
-            tokenRef:
-              secretName: dev-team-a-github-token
-              key: token
-            labels:
-            - preview
-          requeueAfterSeconds: 1800
-      - git:
-          repoURL: https://github.com/m-gran/devsecops-manifests.git
-          revision: HEAD
-          directories:
-          - path: apps/dev-team-a/*
-  template: # Moved outside of generators
+    - matrix: # This is the missing link to combine both generators
+        generators:
+          - pullRequest:
+              github:
+                owner: m-gran
+                repo: devsecops-manifests
+                tokenRef:
+                  secretName: dev-team-a-github-token
+                  key: token
+                labels:
+                  - preview
+              requeueAfterSeconds: 1800
+          - git:
+              repoURL: https://github.com/m-gran/devsecops-manifests.git
+              revision: HEAD
+              directories:
+                - path: apps/dev-team-a/*
+  template:
     metadata:
       name: '{{.path.basename}}-pr-{{.number}}'
     spec:
@@ -31,14 +31,14 @@ spec:
       source:
         repoURL: https://github.com/m-gran/devsecops-manifests.git
         targetRevision: '{{.head_sha}}'
-        path: '{{.path}}/overlays/preview'
+        path: '{{.path}}/overlays/dev'
         helm:
           parameters:
-          - name: image.tag
-            value: 'pr-{{.number}}'
+            - name: image.tag
+              value: 'pr-{{.number}}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: dev-team-a-dev
+        namespace: dev-team-a-dev 
       syncPolicy:
         automated:
           prune: true
