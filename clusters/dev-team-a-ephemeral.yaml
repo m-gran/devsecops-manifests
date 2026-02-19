@@ -31,7 +31,7 @@ spec:
       source:
         repoURL: https://github.com/m-gran/devsecops-manifests.git
         targetRevision: '{{.head_sha}}'
-        path: '{{.path}}'
+        path: '{{.path.path}}'
         helm:
           parameters:
             - name: image.tag
