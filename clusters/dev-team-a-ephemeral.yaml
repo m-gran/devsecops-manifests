@@ -32,10 +32,6 @@ spec:
         repoURL: https://github.com/m-gran/devsecops-manifests.git
         targetRevision: '{{.head_sha}}'
         path: '{{.path.path}}'
-        helm:
-          parameters:
-            - name: image.tag
-              value: 'pr-{{.number}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: dev-team-a-dev 
