@@ -16,6 +16,8 @@ spec:
     server: https://kubernetes.default.svc
   - namespace: dev-team-a-prod
     server: https://kubernetes.default.svc
+  - namespace: dev-team-a-pr-*
+    server: https://kubernetes.default.svc
 
   # 3. May not touch cluster level objects (except Namespace)
   clusterResourceWhitelist: 

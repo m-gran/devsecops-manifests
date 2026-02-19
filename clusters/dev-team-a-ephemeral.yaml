@@ -34,7 +34,7 @@ spec:
         path: '{{.path.path}}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: dev-team-a-dev 
+        namespace: 'dev-team-a-pr-{{.number}}'
       syncPolicy:
         automated:
           prune: true
