@@ -22,7 +22,7 @@ spec:
               repoURL: https://github.com/m-gran/devsecops-manifests.git
               revision: HEAD
               directories:
-                - path: apps/dev-team-a/*
+                - path: apps/dev-team-a/devsecops-demo-app/overlays/dev
   template:
     metadata:
       name: '{{.path.basename}}-pr-{{.number}}'
@@ -31,7 +31,7 @@ spec:
       source:
         repoURL: https://github.com/m-gran/devsecops-manifests.git
         targetRevision: '{{.head_sha}}'
-        path: '{{.path}}/overlays/dev'
+        path: '{{.path}}'
         helm:
           parameters:
             - name: image.tag
