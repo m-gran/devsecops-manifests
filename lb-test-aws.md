@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab-test-service
+  namespace: default
+  annotations:
+    # Provisions a Network Load Balancer (NLB) instead of a Classic Load Balancer
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    # Ensures the NLB is internal and gets private IPs from the EKS VPC (10.0.0.0/16)
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  selector:
+    app: lab-test-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
