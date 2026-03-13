@@ -7,7 +7,8 @@ metadata:
     # Provisions a Network Load Balancer (NLB) instead of a Classic Load Balancer
     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
     # Ensures the NLB is internal and gets private IPs from the EKS VPC (10.0.0.0/16)
-    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
 spec:
   type: LoadBalancer
   selector:
@@ -15,4 +16,4 @@ spec:
   ports:
     - protocol: TCP
       port: 8080
-      targetPort: 80
+      targetPort: 5000
