@@ -25,11 +25,12 @@ spec:
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
-          image: "480126395555.dkr.ecr.eu-north-1.amazonaws.com/devsecops-lab-app:v0.0.6"
+          image: "480126395555.dkr.ecr.eu-north-1.amazonaws.com/devsecops-lab-app:v0.0.99"
           imagePullPolicy: IfNotPresent
+          resources: {}
           ports:
             - name: http
-              containerPort: 5000
+              containerPort: 4999
               protocol: TCP
           livenessProbe:
             httpGet:
