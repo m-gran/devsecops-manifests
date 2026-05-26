@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: dev-team-a-prod
 resources:
 - ../../base
+- ../../base/loadbalancer.yaml
 patches:
 - path: service-patch.yaml
