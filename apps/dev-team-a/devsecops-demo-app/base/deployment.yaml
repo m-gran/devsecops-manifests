@@ -25,7 +25,7 @@ spec:
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
-          image: "480126395555.dkr.ecr.eu-north-1.amazonaws.com/devsecops-lab-app:v999-chaos-test"
+          image: "480126395555.dkr.ecr.eu-north-1.amazonaws.com/devsecops-lab-app:v0.0.7"
           imagePullPolicy: IfNotPresent
           resources: {}
           ports:
