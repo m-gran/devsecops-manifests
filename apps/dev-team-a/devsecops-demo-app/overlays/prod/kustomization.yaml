@@ -4,5 +4,6 @@ namespace: dev-team-a-prod
 resources:
 - ../../base
 - loadbalancer.yaml
+- networkpolicy.yaml
 patches:
 - path: service-patch.yaml
