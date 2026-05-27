@@ -1,0 +1,16 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-nlb-to-demo-app
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: devsecops-lab-app
+      app.kubernetes.io/instance: dev-team-a
+  policyTypes:
+    - Ingress
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 5000

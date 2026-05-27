@@ -9,10 +9,13 @@ metadata:
     # Ensures the NLB is internal and gets private IPs from the EKS VPC (10.0.0.0/16)
     service.beta.kubernetes.io/aws-load-balancer-internal: "false"
     service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    # Pin HC port to the traffic port so AWS console / CLI drift can't silently move it
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "traffic-port"
 spec:
   type: LoadBalancer
   selector:
-    app.kubernetes.io/name: devsecops-lab-appp
+    app.kubernetes.io/name: devsecops-lab-app
+    app.kubernetes.io/instance: dev-team-a
   ports:
     - protocol: TCP
       port: 8080
